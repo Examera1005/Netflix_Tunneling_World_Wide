@@ -8,9 +8,7 @@ Le design repose sur un relais local (AP/STA) qui encapsule les flux applicatifs
 
 Le tunnel ajoute un overhead d'encapsulation. Pour éviter la fragmentation ou les pertes silencieuses :
 
-\[
-MTU_{effective} = MTU_{physique} - Overhead
-\]
+`MTU_effective = MTU_physique - Overhead`
 
 - `MTU_physique` : MTU de l'interface sous-jacente.
 - `Overhead` : en-têtes additionnels (UDP + WireGuard + IP, etc.).
