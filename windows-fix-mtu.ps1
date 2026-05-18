@@ -4,7 +4,7 @@ $ErrorActionPreference = 'Stop'
 
 $tailscaleAdapter = Get-NetAdapter -Name 'Tailscale*' -ErrorAction SilentlyContinue | Select-Object -First 1
 if (-not $tailscaleAdapter) {
-    throw "Aucune interface Tailscale detectee. Verifiez que Tailscale est installe et connecte."
+    throw "Aucune interface Tailscale détectée. Vérifiez que Tailscale est installé et connecté."
 }
 
 $interfaceName = $tailscaleAdapter.Name

@@ -5,6 +5,7 @@ Ce dépôt fournit l'architecture, la documentation et les scripts nécessaires 
 ## 1. Architecture Réseau
 
 L'infrastructure repose sur l'exploitation d'une seule interface radio physique sur le PC relais, configurée en mode concurrent (AP/STA), associée à un mécanisme de modification de la taille des segments TCP à la volée (MSS Clamping / MTU Reduction) pour éviter le phénomène de "Blackhole" réseau.
+Pour les détails bas niveau (modèle MTU, plan de contrôle/données, et interaction `rp_filter`/`src_valid_mark`), voir [ARCHITECTURE.md](./ARCHITECTURE.md).
 
 ```text
 [ Projecteur / TV ]
@@ -24,6 +25,15 @@ L'infrastructure repose sur l'exploitation d'une seule interface radio physique 
 ## 2. Configuration du Nœud de Sortie (Serveur Distant - CachyOS / Arch Linux)
 
 Le serveur doit agir comme un routeur NAT transparent et ne pas passer en veille lors de la fermeture du capot (ACPI).
+
+Chemin recommandé (automatisé) :
+
+```bash
+chmod +x ./cachyos-setup.sh
+sudo ./cachyos-setup.sh
+```
+
+Ensuite, passez directement à l'étape 4 (`tailscale up --advertise-exit-node`).
 
 ### Étape 1 : Installation et persistence du démon
 
@@ -51,7 +61,7 @@ sudo sysctl -p /etc/sysctl.d/99-tailscale.conf
 Pour maintenir la carte réseau active écran fermé :
 
 ```bash
-sudo sed -i 's/#HandleLidSwitch=suspend/HandleLidSwitch=ignore/g' /etc/systemd/logind.conf
+if grep -qE '^#?HandleLidSwitch=' /etc/systemd/logind.conf; then sudo sed -i 's/^#\?HandleLidSwitch=.*/HandleLidSwitch=ignore/' /etc/systemd/logind.conf; else echo 'HandleLidSwitch=ignore' | sudo tee -a /etc/systemd/logind.conf; fi
 sudo systemctl restart systemd-logind
 ```
 
@@ -87,7 +97,9 @@ En raison des contraintes physiques des puces Wi-Fi Intel (ex: AX201), le hotspo
    L'encapsulation WireGuard réduit la MTU effective. Pour éviter le drop des paquets TLS :
    ```bash
    sudo iptables -t mangle -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
+   sudo sh -c 'iptables-save > /etc/iptables/rules.v4'
    ```
+   (Installez `iptables-persistent` au préalable si `/etc/iptables/rules.v4` n'existe pas.)
 
 ### Option B : Implémentation sous Windows (11/10)
 
@@ -97,9 +109,9 @@ En raison des contraintes physiques des puces Wi-Fi Intel (ex: AX201), le hotspo
    - Exécutez `ncpa.cpl`.
    - Clic droit sur l'adaptateur **Tailscale Tunnel** > *Propriétés* > Onglet *Partage*.
    - Cochez *"Autoriser d'autres utilisateurs..."* et sélectionnez l'interface virtuelle correspondant au Hotspot Microsoft.
-4. **Correction de la MTU (PowerShell Admin) :**
+4. **Correction MTU + redémarrage ICS (PowerShell Admin) :**
    ```powershell
-   netsh interface ipv4 set subinterface "Tailscale" mtu=1280 store=persistent
+   powershell -ExecutionPolicy Bypass -File .\windows-fix-mtu.ps1
    ```
 
 ## 4. Protocole de Validation (Post-Déploiement)

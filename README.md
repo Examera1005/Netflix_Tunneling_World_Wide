@@ -58,6 +58,7 @@ Then run PowerShell as Administrator for post-install MTU/ICS fix using [`window
 ## 1. Network Architecture
 
 The design uses a single physical radio interface on the local relay PC in concurrent mode (AP/STA), with on-path TCP segment tuning (MSS clamping / MTU reduction) to avoid network blackholes.
+For low-level rationale (MTU model, control/data plane behavior, and `rp_filter`/`src_valid_mark`), see [ARCHITECTURE.md](./ARCHITECTURE.md).
 
 ```text
 [ Projector / TV ]
@@ -77,6 +78,15 @@ The design uses a single physical radio interface on the local relay PC in concu
 ## 2. Exit Node Configuration (Remote Server - CachyOS / Arch Linux)
 
 The remote node acts as a transparent NAT router and should remain awake with the lid closed (for laptop-based hosts).
+
+Preferred (automated) path:
+
+```bash
+chmod +x ./cachyos-setup.sh
+sudo ./cachyos-setup.sh
+```
+
+Then continue directly to Step 4 (`tailscale up --advertise-exit-node`).
 
 ### Step 1: Install and persist daemon
 
@@ -102,7 +112,7 @@ sudo sysctl -p /etc/sysctl.d/99-tailscale.conf
 ### Step 3: Prevent sleep on lid close
 
 ```bash
-sudo sed -i 's/#HandleLidSwitch=suspend/HandleLidSwitch=ignore/g' /etc/systemd/logind.conf
+if grep -qE '^#?HandleLidSwitch=' /etc/systemd/logind.conf; then sudo sed -i 's/^#\?HandleLidSwitch=.*/HandleLidSwitch=ignore/' /etc/systemd/logind.conf; else echo 'HandleLidSwitch=ignore' | sudo tee -a /etc/systemd/logind.conf; fi
 sudo systemctl restart systemd-logind
 ```
 
@@ -137,7 +147,9 @@ Due to physical constraints on some Intel Wi-Fi chipsets (for example AX201), th
 4. **Add MSS clamping rule (iptables)**
    ```bash
    sudo iptables -t mangle -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
+   sudo sh -c 'iptables-save > /etc/iptables/rules.v4'
    ```
+   (Install `iptables-persistent` first if `/etc/iptables/rules.v4` is not present.)
 
 ### Option B: Windows 11/10 implementation
 
@@ -147,9 +159,9 @@ Due to physical constraints on some Intel Wi-Fi chipsets (for example AX201), th
    - Run `ncpa.cpl`.
    - Right-click **Tailscale Tunnel** adapter > *Properties* > *Sharing* tab.
    - Enable *Allow other network users...* and select the Microsoft hotspot virtual adapter.
-4. **Set MTU (PowerShell Admin)**
+4. **Set MTU + restart ICS (PowerShell Admin)**
    ```powershell
-   netsh interface ipv4 set subinterface "Tailscale" mtu=1280 store=persistent
+   powershell -ExecutionPolicy Bypass -File .\windows-fix-mtu.ps1
    ```
 
 ## 4. Post-deployment Validation Protocol
