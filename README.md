@@ -77,7 +77,7 @@ En raison des contraintes physiques des puces Wi-Fi Intel (ex: AX201), le hotspo
    ```
 2. **Instancier le Hotspot (Exemple pour la bande 5GHz, canal 44) :**
    ```bash
-   nmcli device wifi hotspot ifname <VOTRE_INTERFACE> ssid "Stream_Relais" password "ChiffrementFort26!" band a channel 44
+   nmcli device wifi hotspot ifname <VOTRE_INTERFACE> ssid "Stream_Relais" password "<MOT_DE_PASSE_FORT_UNIQUE>" band a channel 44
    ```
 3. **Établir le routage asymétrique Tailscale :**
    ```bash
