@@ -61,7 +61,11 @@ sudo sysctl -p /etc/sysctl.d/99-tailscale.conf
 Pour maintenir la carte réseau active écran fermé :
 
 ```bash
-if grep -qE '^#?HandleLidSwitch=' /etc/systemd/logind.conf; then sudo sed -i 's/^#\?HandleLidSwitch=.*/HandleLidSwitch=ignore/' /etc/systemd/logind.conf; else echo 'HandleLidSwitch=ignore' | sudo tee -a /etc/systemd/logind.conf; fi
+if grep -qE '^#?HandleLidSwitch=' /etc/systemd/logind.conf; then
+  sudo sed -i 's/^#\?HandleLidSwitch=.*/HandleLidSwitch=ignore/' /etc/systemd/logind.conf
+else
+  echo 'HandleLidSwitch=ignore' | sudo tee -a /etc/systemd/logind.conf
+fi
 sudo systemctl restart systemd-logind
 ```
 
