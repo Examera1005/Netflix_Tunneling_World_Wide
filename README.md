@@ -53,7 +53,7 @@ Option B: install from the Mac App Store (search for "Tailscale").
 Download from:
 - https://tailscale.com/download
 
-Then run PowerShell as Administrator for post-install MTU/ICS fix using `windows-fix-mtu.ps1`.
+Then run PowerShell as Administrator for post-install MTU/ICS fix using [`windows-fix-mtu.ps1`](./windows-fix-mtu.ps1).
 
 ## 1. Network Architecture
 
@@ -128,7 +128,7 @@ Due to physical constraints on some Intel Wi-Fi chipsets (for example AX201), th
    ```
 2. **Create hotspot** (example: 5GHz, channel 44)
    ```bash
-   nmcli device wifi hotspot ifname <YOUR_INTERFACE> ssid "Stream_Relay" password "<YOUR_STRONG_UNIQUE_PASSWORD>" band a channel 44
+   nmcli device wifi hotspot ifname <YOUR_INTERFACE> ssid "Stream_Relais" password "<YOUR_STRONG_UNIQUE_PASSWORD>" band a channel 44
    ```
 3. **Enable asymmetric routing through exit node**
    ```bash
