@@ -81,7 +81,7 @@ The remote node acts as a transparent NAT router and should remain awake with th
 ### Step 1: Install and persist daemon
 
 ```bash
-sudo pacman -S tailscale
+sudo pacman -Syu tailscale
 sudo systemctl enable --now tailscaled
 ```
 
