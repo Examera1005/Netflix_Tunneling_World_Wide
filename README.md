@@ -75,16 +75,22 @@ For low-level rationale (MTU model, control/data plane behavior, and `rp_filter`
 
 ---
 
-## 2. Exit Node Configuration (Remote Server - CachyOS / Arch Linux)
+## 2. Exit Node Configuration (Remote Server - CachyOS / Arch Linux / Debian / Ubuntu)
 
 The remote node acts as a transparent NAT router and should remain awake with the lid closed (for laptop-based hosts).
 
 Preferred (automated) path:
 
-```bash
-chmod +x ./cachyos-setup.sh
-sudo ./cachyos-setup.sh
-```
+- **CachyOS / Arch Linux**
+  ```bash
+  chmod +x ./cachyos-setup.sh
+  sudo ./cachyos-setup.sh
+  ```
+- **Debian / Ubuntu**
+  ```bash
+  chmod +x ./debian-setup.sh
+  sudo ./debian-setup.sh
+  ```
 
 Then continue directly to Step 4 (`tailscale up --advertise-exit-node`).
 
@@ -132,7 +138,8 @@ Then, in the Tailscale admin console, approve this machine as an exit node.
 
 The local relay receives Internet from your home network and exposes a hotspot for the media device. All hotspot traffic should be steered into the `tailscale0` path.
 
-### Option A: Linux implementation (Kubuntu)
+### Option A: Linux implementation (Kubuntu / Debian)
+
 
 Due to physical constraints on some Intel Wi-Fi chipsets (for example AX201), the hotspot should run on the same band/channel as uplink Wi-Fi.
 
@@ -167,6 +174,25 @@ Due to physical constraints on some Intel Wi-Fi chipsets (for example AX201), th
    ```powershell
    powershell -ExecutionPolicy Bypass -File .\windows-fix-mtu.ps1
    ```
+
+### Option C: Raspberry Pi implementation (Raspberry Pi OS / Debian)
+
+Preferred (automated) path:
+
+```bash
+chmod +x ./rpi-setup.sh
+sudo ./rpi-setup.sh
+```
+
+This installs Tailscale, applies the required kernel sysctl settings, and persists the MSS clamping iptables rule across reboots via `iptables-persistent`.
+
+Then configure the Pi as the Tailscale client relay:
+
+```bash
+sudo tailscale up --exit-node=<TAILSCALE_SERVER_IP> --accept-dns=true --exit-node-allow-lan-access=true
+```
+
+To expose a Wi-Fi hotspot from the Pi, install `hostapd` and `dnsmasq` and configure `wlan0` as an AP on the same band as your uplink.
 
 ## 4. Post-deployment Validation Protocol
 
