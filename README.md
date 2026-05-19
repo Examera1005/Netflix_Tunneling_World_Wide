@@ -91,7 +91,7 @@ Then continue directly to Step 4 (`tailscale up --advertise-exit-node`).
 ### Step 1: Install and persist daemon
 
 ```bash
-sudo pacman -Syu tailscale
+sudo pacman -S tailscale
 sudo systemctl enable --now tailscaled
 ```
 
