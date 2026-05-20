@@ -93,6 +93,7 @@ Preferred (automated) path:
   ```
 
 Then continue directly to Step 4 (`tailscale up --advertise-exit-node`).
+The manual steps below are for CachyOS / Arch Linux.
 
 ### Step 1: Install and persist daemon
 

@@ -40,6 +40,7 @@ Chemin recommandé (automatisé) :
   ```
 
 Ensuite, passez directement à l'étape 4 (`tailscale up --advertise-exit-node`).
+Les étapes manuelles ci-dessous sont pour CachyOS / Arch Linux.
 
 ### Étape 1 : Installation et persistence du démon
 

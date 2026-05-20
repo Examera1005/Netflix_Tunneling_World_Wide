@@ -14,6 +14,7 @@ fi
 # security-sensitive environments.
 if ! command -v tailscaled >/dev/null 2>&1; then
   apt-get update -qq
+  DEBIAN_FRONTEND=noninteractive apt-get install -y curl ca-certificates
   curl -fsSL https://tailscale.com/install.sh | sh
 fi
 

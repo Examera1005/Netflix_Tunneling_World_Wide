@@ -13,8 +13,10 @@ fi
 # NOTE: piping curl to sh is the official Tailscale installation method.
 # Review the script at https://tailscale.com/install.sh before running in
 # security-sensitive environments.
+apt-get update -qq
+DEBIAN_FRONTEND=noninteractive apt-get install -y curl ca-certificates debconf-utils
+
 if ! command -v tailscaled >/dev/null 2>&1; then
-  apt-get update -qq
   curl -fsSL https://tailscale.com/install.sh | sh
 fi
 
@@ -43,4 +45,4 @@ iptables-save >/etc/iptables/rules.v4
 systemctl enable --now tailscaled
 
 echo "Setup complete. Run next:"
-echo "  tailscale up --exit-node=<TAILSCALE_SERVER_IP> --accept-dns=true --exit-node-allow-lan-access=true"
+echo "  sudo tailscale up --exit-node=<TAILSCALE_SERVER_IP> --accept-dns=true --exit-node-allow-lan-access=true"
