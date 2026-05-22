@@ -21,7 +21,9 @@ if ! command -v tailscaled >/dev/null 2>&1; then
 fi
 
 # Install iptables-persistent to survive reboots.
-# Pre-seed debconf to avoid interactive "save current rules?" prompts.
+# Ensure debconf-set-selections exists, then pre-seed debconf to avoid
+# interactive "save current rules?" prompts.
+DEBIAN_FRONTEND=noninteractive apt-get install -y debconf-utils
 echo "iptables-persistent iptables-persistent/autosave_v4 boolean true" | debconf-set-selections
 echo "iptables-persistent iptables-persistent/autosave_v6 boolean true" | debconf-set-selections
 DEBIAN_FRONTEND=noninteractive apt-get install -y iptables-persistent
