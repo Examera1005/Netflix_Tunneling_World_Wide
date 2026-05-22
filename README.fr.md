@@ -22,18 +22,25 @@ Pour les détails bas niveau (modèle MTU, plan de contrôle/données, et intera
 
 ---
 
-## 2. Configuration du Nœud de Sortie (Serveur Distant - CachyOS / Arch Linux)
+## 2. Configuration du Nœud de Sortie (Serveur Distant - CachyOS / Arch Linux / Debian / Ubuntu)
 
 Le serveur doit agir comme un routeur NAT transparent et ne pas passer en veille lors de la fermeture du capot (ACPI).
 
 Chemin recommandé (automatisé) :
 
-```bash
-chmod +x ./cachyos-setup.sh
-sudo ./cachyos-setup.sh
-```
+- **CachyOS / Arch Linux**
+  ```bash
+  chmod +x ./cachyos-setup.sh
+  sudo ./cachyos-setup.sh
+  ```
+- **Debian / Ubuntu**
+  ```bash
+  chmod +x ./debian-setup.sh
+  sudo ./debian-setup.sh
+  ```
 
 Ensuite, passez directement à l'étape 4 (`tailscale up --advertise-exit-node`).
+Les étapes manuelles ci-dessous sont pour CachyOS / Arch Linux.
 
 ### Étape 1 : Installation et persistence du démon
 
@@ -117,6 +124,25 @@ En raison des contraintes physiques des puces Wi-Fi Intel (ex: AX201), le hotspo
    ```powershell
    powershell -ExecutionPolicy Bypass -File .\windows-fix-mtu.ps1
    ```
+
+### Option C : Implémentation sur Raspberry Pi (Raspberry Pi OS / Debian)
+
+Chemin recommandé (automatisé) :
+
+```bash
+chmod +x ./rpi-setup.sh
+sudo ./rpi-setup.sh
+```
+
+Ce script installe Tailscale, applique les paramètres sysctl nécessaires et rend la règle MSS clamping persistante au redémarrage via `iptables-persistent`.
+
+Configurez ensuite le Pi comme relais Tailscale :
+
+```bash
+sudo tailscale up --exit-node=<IP_TAILSCALE_SERVEUR> --accept-dns=true --exit-node-allow-lan-access=true
+```
+
+Pour exposer un hotspot Wi-Fi depuis le Pi, installez `hostapd` et `dnsmasq` et configurez `wlan0` en mode AP sur la même bande que votre connexion montante.
 
 ## 4. Protocole de Validation (Post-Déploiement)
 
