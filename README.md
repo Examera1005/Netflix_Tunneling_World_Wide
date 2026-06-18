@@ -209,3 +209,12 @@ After reboot, ICS can occasionally lose virtual routing alignment:
 
 1. Disable then re-enable Mobile Hotspot.
 2. In `ncpa.cpl`, open Tailscale adapter sharing properties, uncheck sharing, apply, then re-check to force NAT rule reinitialization.
+## Star History
+
+<a href="https://www.star-history.com/?repos=Examera1005%2FNetflix_Tunneling_World_Wide&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=Examera1005/Netflix_Tunneling_World_Wide&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=Examera1005/Netflix_Tunneling_World_Wide&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=Examera1005/Netflix_Tunneling_World_Wide&type=date&legend=top-left" />
+ </picture>
+</a>
